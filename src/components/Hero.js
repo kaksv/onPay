@@ -1,11 +1,93 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import onpay from '../assets/onpaylogo1.png'
-import Modal from '../modals/Modal';
-import {useState } from 'react';
+import { ethers } from 'ethers';
+import tokenAbi from '../contracts/erc20Abi.mjs';
+
 
 
 function Hero() {
-    const [open, setOpen] = useState(false)
+   
+    const [copyButtonState, setCopyButtonState] = useState('copy');
+    const [account, setAccount] = useState('');
+    const [provider, setProvider] = useState(null);
+    const [balance, setBalance] = useState('');
+    const [receipientAddress, setReceipientAddress] = useState('');
+    const [usdcBalance, setUsdcBalance] = useState(null);
+
+    // const rpcEndPoint = 'https://sepolia.infura.io/v3/beec3ffec28f485fb9bf679eb19e5b6d';
+    const sepoliaUsdcAddress = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238';
+ 
+    useEffect(() => {
+        
+            if(window.ethereum) {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            setProvider(provider);
+        
+            }else {
+                alert('Please install MetaMask');
+                console.log('No wallet found');
+            }
+        
+    }, []);
+
+    const connectWallet = async () => {
+        try {
+        const accounts = await provider.send('eth_requestAccounts', []);
+        setAccount(accounts[0]);
+        updateBalance(accounts[0]);
+        updateUsdBalance(accounts[0]);
+    } catch (error) {
+        console.error('Error connecting to wallet:', error);
+    }
+    };
+
+    const updateBalance = async (account) => {
+        // const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const balance = await provider.getBalance(account); //get Eth Balance
+        setBalance(ethers.utils.formatEther(balance));
+
+        
+    }
+    const updateUsdBalance = async (account) => {
+        
+            const usdcContract = new ethers.Contract(sepoliaUsdcAddress, tokenAbi, provider);
+            const usdcBalanceRaw = await usdcContract.balanceOf(account);
+            const usdcBalanceFormatted = ethers.utils.formatUnits(usdcBalanceRaw, 6);
+            setUsdcBalance(usdcBalanceFormatted);
+            console.log(usdcBalanceFormatted);
+        
+
+    };
+
+
+    const copyToClipboard = () => {
+        setCopyButtonState('copying');
+        navigator.clipboard.writeText(account);
+        
+        setTimeout(() => {
+            setCopyButtonState('copy');
+        }, 2000);
+    };
+
+    // const sendTokens = async (receipient, amount) => {
+    //     const tokenAddress = "	0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"; //USDC contract address on sepolia testnet.
+    //     const tokenAbi = [{"inputs":[{"internalType":"address","name":"implementationContract","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newAdmin","type":"address"}],"name":"changeAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"implementation","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"}],"name":"upgradeTo","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"upgradeToAndCall","outputs":[],"stateMutability":"payable","type":"function"}];
+    //     const tokenContract = new ethers.Contract(tokenAddress, tokenAbi, provider.getSigner());
+
+    //     const senderAddress = await provider.getSigner();
+    //     const receipientAddress = 
+    //     const senderBalance = await senderAddress.getBalance();
+    //     try {
+    //         const tx = await tokenContract.transfer(receipient, ethers.utils.parseUnits(amount, 6)); // 6 decimal places since these are stable coins
+    //         await tx.wait();
+    //         alert("Tokens sent successfully");
+    //     }catch (error) {
+    //         console.error("Error sending tokens:", error);
+    //         alert("Transaction failed!");
+    //     }
+    // }
+
+
   return (
 
 <section className="">
@@ -16,16 +98,69 @@ function Hero() {
      <div className=" bg-[#eaeaea] px-2 rounded-t-md rounded-bl-md mb-4">
 
       <div className=' justify-center items-center'>
-        <img src={onpay} alt='the logo' className='justify-items-center object-center mt-4 mx-auto'
+        <div className='flex flex-row justify-between '>
+        
+        <img src={onpay} alt='the logo' className='justify-items-center object-center pt-2 mt-2 ml-4'
         width={100}
         height={100}
         />
+
+{account ?  (
+    <div className=' bg-white px-2  shadow-md rounded-md  mt-2'>
+        <div className='flex flex-row justify-between'>
+            <p className=" leading-relaxed text-gray-500 text-center text-sm mr-2">
+            {account.slice(0, 3) + '...'
+            + account.slice(39, 42)
+            }
+            {/* {useTextCount(account, 5)} */} 
+            
+
+            </p>
+            <button 
+                onClick={copyToClipboard}
+                // type='button' 
+                value='copy' 
+                className='trailing-relaxed  text-center bg-gray-100 rounded-sm px-2 my-1 shadow-md  text-sm'
+                >
+                {copyButtonState}
+            </button>
+    </div> 
+    <span className="relative flex justify-center ">
+         <div
+            className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-75"
+          >
+
+         </div>
+         </span>
+
+      <div className='flex flex-row justify-between'>
+            <p className=" leading-relaxed text-gray-500 text-center text-sm pr-1">
+            {balance.slice(0, 5) + ' '} ETH
+            </p>
+            <div
+            className='trailing-relaxed  text-center border border-gray-100 rounded-sm px-2 my-1   text-sm'
+            >
+                
+            {usdcBalance.slice(0, 3) + ' '} USDC
+            </div>
+     </div>
+    </div>
+) : (
+    
+        <button onClick={connectWallet }  
+        className='rounded-md bg-transparent border border-black hover:bg-gradient-to-r from-black via-gray-600 to-slate-400 px-4 py-2 text-sm  mt-2 mr-4  hover:text-white hover:border-none text-md focus:outline-none focus:ring active:text-opacity-75'>
+                    Connect
+                </button>
+    
+)}
+
+        </div>
 
         <p className="mb-2 leading-relaxed text-gray-500 text-center text-sm">
           Seamless cross border payments.
         </p>
 
-        <span className="relative flex justify-center">
+        <span className="relative flex justify-center ">
          <div
             className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-75"
           >
@@ -62,24 +197,7 @@ function Hero() {
                 Receive
                 </button>
 
-                {/* <Modal open={open} onClose={() => setOpen(false)}>
-                    <div className='text-center w-56'>
-                    Close
-                    <div className='mx-auto my-4 w-48'>
-                        <h3 className='text-lg font-black text-gray-800'>
-                            Copy address
-                        </h3>
-                        <p className='text-sm text-gray-500'> 
-                            Are you sure this is the correct Address? 
-                        </p>
-                    </div>
-                    <div className='flex gap-4'>
-                        <button className='btn btn-danger w-full'>Delete</button>
-                        <button className='btn btn-danger w-full' onClick={() => setOpen(false)}>Cancel</button>
-                            
-                    </div>
-                    </div>
-                </Modal> */}
+             
                 
                 
             </nav>
@@ -100,47 +218,49 @@ function Hero() {
                     /> 
                 </div>
                 <div className='mt-8 mb-2 ml-3 ' >
+                {/* <label htmlFor="network" className=" text-sm font-medium text-gray-900"> Network </label> */}
                     <select
-                        name="HeadlineAct"
+
+                        name="network" defaultValue="USDCETH"
                         id="select"
-                        className=" py-2 mt-1.5 w-full rounded-lg border-gray-300 focus:outline-none hover:bg-gray-50 sm:text-sm "
+                        className=" py-2 mt-2 w-full rounded-lg border-gray-300 focus:outline-none hover:bg-gray-50 sm:text-sm "
+                        style={{
+                            // color:'white',
+                            // background:'#101010',
+                            focus: '#111111'
+
+                            
+                        }}
                     >
-                        <option value="">USDC starknet</option>
-                        <option value="JM">USDC Base</option>
-                        <option value="SRV">USDC Lisk</option>
-                        <option value="JH">USDC Celo</option>
-                        <option value="BBK">USDT TRON</option>
-                        <option value="AK">USDT Celo</option>
-                        <option value="BG">USDT Ethereum</option>
-                        <option value="EC">USDT Base</option>
+                        <option value="STRK">USDC starknet</option>
+                        <option value="BASE">USDC Base</option>
+                        <option value="LISK">USDC Lisk</option>
+                        <option value="cUSDC">USDC Celo</option>
+                        <option value="USDCETH">USDC Ethereum</option>
+                        <option value="USDTCELO">USDT Celo</option>
+                        <option value="USDTETH">USDT Ethereum</option>
+                        <option value="USDTBASE">USDT Base</option>
                     </select>
                 </div>
             </div>
         </div>
         {/* Wallet address */}
-        <label
-            // htmlFor="Username"
-            className="mb-4 relative block p-2 bg-white rounded-md border border-gray-200 shadow-sm focus-within:border-[#747474]  focus-within:ring-[#747373]"
-            >
+           
             <input
+                value={receipientAddress} onChange={(e) => setReceipientAddress(e.target.value)}
                 type="text"
-                id="Username"
-                className="peer border-none bg-transparent placeholder-transparent focus:border-transparent focus:outline-none focus:ring-0"
-                placeholder="Username"
+                id="address"
+                className=" mb-4 px-2 py-1.5  w-full border border-white focus:border-gray focus:outline-none focus:ring-0 bg-white rounded-md   focus:ring-black focus-within:border-[#101010]  focus-within:ring-[#f4f4f4]"
+                placeholder="Wallet Address"
             />
-
-            <span
-                className=" px-1.5 pointer-events-none absolute start-2.5 top-0 -translate-y-1/2 bg-white rounded-md p-0.5 text-xs text-gray-700 transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:text-xs"
-            >
-                Wallet Address
-            </span>
-        </label>
+             
 
         {/* confirmation button */}
         <button
+         onClick={()=>{}}
          className={`w-full flex items-center justify-center p-3 md:p-4 bg-[#111111] rounded-full mb-4 text-white font-bold `}
           >
-            Confirm
+            Send
         </button>
 
        
@@ -152,3 +272,4 @@ function Hero() {
 }
 
 export default Hero;
+
