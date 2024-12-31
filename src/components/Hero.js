@@ -5,6 +5,7 @@ import tokenAbi from '../contracts/erc20Abi.mjs';
 
 
 
+
 function Hero() {
    
     const [copyButtonState, setCopyButtonState] = useState('copy');
@@ -12,7 +13,10 @@ function Hero() {
     const [provider, setProvider] = useState(null);
     const [balance, setBalance] = useState('');
     const [receipientAddress, setReceipientAddress] = useState('');
-    const [usdcBalance, setUsdcBalance] = useState(null);
+    const [usdcBalance, setUsdcBalance] = useState('');
+
+    const [amount, setAmount] = useState('');
+    const [txStatus, setTxStatus] = useState('');
 
     // const rpcEndPoint = 'https://sepolia.infura.io/v3/beec3ffec28f485fb9bf679eb19e5b6d';
     const sepoliaUsdcAddress = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238';
@@ -69,23 +73,29 @@ function Hero() {
         }, 2000);
     };
 
-    // const sendTokens = async (receipient, amount) => {
-    //     const tokenAddress = "	0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238"; //USDC contract address on sepolia testnet.
-    //     const tokenAbi = [{"inputs":[{"internalType":"address","name":"implementationContract","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newAdmin","type":"address"}],"name":"changeAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"implementation","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"}],"name":"upgradeTo","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"upgradeToAndCall","outputs":[],"stateMutability":"payable","type":"function"}];
-    //     const tokenContract = new ethers.Contract(tokenAddress, tokenAbi, provider.getSigner());
+    const handleSendTokens = async () => {
+        if(!receipientAddress || !amount) {
+            setTxStatus("Please enter receipient address and amount");
+            return;
+        }
+        try {
+            const signer = provider.getSigner();
+            const tokenToTransactContract = new ethers.Contract(sepoliaUsdcAddress, tokenAbi, signer);
 
-    //     const senderAddress = await provider.getSigner();
-    //     const receipientAddress = 
-    //     const senderBalance = await senderAddress.getBalance();
-    //     try {
-    //         const tx = await tokenContract.transfer(receipient, ethers.utils.parseUnits(amount, 6)); // 6 decimal places since these are stable coins
-    //         await tx.wait();
-    //         alert("Tokens sent successfully");
-    //     }catch (error) {
-    //         console.error("Error sending tokens:", error);
-    //         alert("Transaction failed!");
-    //     }
-    // }
+             //Convert amount to the correct decimal format (6 decimals for USDC)
+             const amountInUnits = ethers.utils.parseUnits(amount, 6);
+
+             //send USDC Tokens
+             const tx = await tokenToTransactContract.transfer(receipientAddress, amountInUnits);
+             setTxStatus('Transaction pending...');
+             //Wait for the transaction to be mined
+             await tx.wait();
+             setTxStatus(`Success: tx Hash: ${tx.hash}`);
+        }catch (error) {
+            console.error(error);
+            setTxStatus(`Transaction failed: ${error.message}`);
+        }
+    }
 
 
   return (
@@ -214,6 +224,8 @@ function Hero() {
                         type="number"
                         id="amount"
                         placeholder="1"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
                         className="  focus:outline-none p-2 mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-md"
                     /> 
                 </div>
@@ -232,14 +244,14 @@ function Hero() {
                             
                         }}
                     >
-                        <option value="STRK">USDC starknet</option>
+                        {/* <option value="STRK">USDC starknet</option> */}
                         <option value="BASE">USDC Base</option>
-                        <option value="LISK">USDC Lisk</option>
-                        <option value="cUSDC">USDC Celo</option>
+                        {/* <option value="LISK">USDC Lisk</option>
+                        <option value="cUSDC">USDC Celo</option> */}
                         <option value="USDCETH">USDC Ethereum</option>
-                        <option value="USDTCELO">USDT Celo</option>
+                        {/* <option value="USDTCELO">USDT Celo</option>
                         <option value="USDTETH">USDT Ethereum</option>
-                        <option value="USDTBASE">USDT Base</option>
+                        <option value="USDTBASE">USDT Base</option> */}
                     </select>
                 </div>
             </div>
@@ -247,21 +259,25 @@ function Hero() {
         {/* Wallet address */}
            
             <input
-                value={receipientAddress} onChange={(e) => setReceipientAddress(e.target.value)}
+                placeholder="Wallet Address"
                 type="text"
                 id="address"
+                value={receipientAddress} 
+                onChange={(e) => setReceipientAddress(e.target.value)}
                 className=" mb-4 px-2 py-1.5  w-full border border-white focus:border-gray focus:outline-none focus:ring-0 bg-white rounded-md   focus:ring-black focus-within:border-[#101010]  focus-within:ring-[#f4f4f4]"
-                placeholder="Wallet Address"
+                
             />
              
 
         {/* confirmation button */}
+
         <button
-         onClick={()=>{}}
+         onClick={handleSendTokens}
          className={`w-full flex items-center justify-center p-3 md:p-4 bg-[#111111] rounded-full mb-4 text-white font-bold `}
           >
             Send
         </button>
+        {txStatus && <p>{txStatus}</p>} 
 
        
      </div>
