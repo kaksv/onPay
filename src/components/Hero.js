@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import onpay from '../assets/onpaylogo1.png'
 import { ethers } from 'ethers';
 import tokenAbi from '../contracts/erc20Abi.mjs';
+import { DNA } from 'react-loader-spinner';
 
 
 
@@ -18,6 +19,10 @@ function Hero() {
     const [amount, setAmount] = useState('');
     const [txStatus, setTxStatus] = useState('');
 
+    const [usdcBalanceChange, setUsdcBalanceChange] = useState(false);
+    const [etheBalanceChange, setEtheBalanceChange] = useState(false);
+    const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
+
     // const rpcEndPoint = 'https://sepolia.infura.io/v3/beec3ffec28f485fb9bf679eb19e5b6d';
     const sepoliaUsdcAddress = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238';
  
@@ -32,7 +37,7 @@ function Hero() {
                 console.log('No wallet found');
             }
         
-    }, []);
+    }, [usdcBalanceChange]);
 
     const connectWallet = async () => {
         try {
@@ -57,8 +62,26 @@ function Hero() {
             const usdcContract = new ethers.Contract(sepoliaUsdcAddress, tokenAbi, provider);
             const usdcBalanceRaw = await usdcContract.balanceOf(account);
             const usdcBalanceFormatted = ethers.utils.formatUnits(usdcBalanceRaw, 6);
-            setUsdcBalance(usdcBalanceFormatted);
+            if (usdcBalanceChange === false) {
+                setUsdcBalance(usdcBalanceFormatted);
+            }
+            
+            if (usdcBalanceChange === true) {
+                //refresh the usdc balance
+                forceUpdate();
+                setUsdcBalance(usdcBalanceFormatted);
+                setUsdcBalanceChange(false);
+            }
+            
             console.log(usdcBalanceFormatted);
+            if (usdcBalanceChange) {
+                //re
+                setUsdcBalanceChange(false);
+            }
+            
+
+            
+
         
 
     };
@@ -67,6 +90,15 @@ function Hero() {
     const copyToClipboard = () => {
         setCopyButtonState('copying');
         navigator.clipboard.writeText(account);
+        
+        setTimeout(() => {
+            setCopyButtonState('copy');
+        }, 2000);
+    };
+
+    const copyToClipboardtxHash = () => {
+        setCopyButtonState('copying');
+        navigator.clipboard.writeText(txStatus);
         
         setTimeout(() => {
             setCopyButtonState('copy');
@@ -87,10 +119,12 @@ function Hero() {
 
              //send USDC Tokens
              const tx = await tokenToTransactContract.transfer(receipientAddress, amountInUnits);
-             setTxStatus('Transaction pending...');
+             setTxStatus('...');
              //Wait for the transaction to be mined
              await tx.wait();
-             setTxStatus(`Success: tx Hash: ${tx.hash}`);
+             setTxStatus(`${tx.hash}`);
+             setEtheBalanceChange(true);
+             setUsdcBalanceChange(true);
         }catch (error) {
             console.error(error);
             setTxStatus(`Transaction failed: ${error.message}`);
@@ -145,13 +179,13 @@ function Hero() {
 
       <div className='flex flex-row justify-between'>
             <p className=" leading-relaxed text-gray-500 text-center text-sm pr-1">
-            {balance.slice(0, 5) + ' '} ETH
+            {balance.slice(0, 4) + ''} ETH
             </p>
             <div
             className='trailing-relaxed  text-center border border-gray-100 rounded-sm px-2 my-1   text-sm'
             >
                 
-            {usdcBalance.slice(0, 3) + ' '} USDC
+            {usdcBalance.slice(0, 5) + ' '} USDC
             </div>
      </div>
     </div>
@@ -270,14 +304,67 @@ function Hero() {
              
 
         {/* confirmation button */}
-
+       {!txStatus && (
         <button
          onClick={handleSendTokens}
          className={`w-full flex items-center justify-center p-3 md:p-4 bg-[#111111] rounded-full mb-4 text-white font-bold `}
           >
             Send
         </button>
-        {txStatus && <p>{txStatus}</p>} 
+         )
+        }
+        {txStatus === '...' && (
+            <button
+            className="w-full flex items-center justify-center p-3 md:p-4 bg-[#f1f1f1f1] rounded-full mb-4 text-[#111111] font-bold "
+            disabled
+            >
+            <svg
+                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+            >
+                <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+                />
+                <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+            </svg>
+            Processing 
+            </button>
+        ) 
+     }    { txStatus.length === 66 && txStatus !== '...'  && (
+        <div>
+        <button
+        onClick={handleSendTokens}
+        className={`w-full flex items-center justify-center p-3 md:p-4 bg-[#111111] rounded-full mb-4 text-white font-bold `}
+         >
+           Send
+       </button>
+           <p className='text-xs mb-4 mx-2'>
+            {/* {txStatus} */}
+           {txStatus.slice(0, 10) + '...' +txStatus.slice(50, 66)}
+           {' '}{' '}
+           <button
+           onClick={copyToClipboardtxHash}
+           value={txStatus}
+           className='trailing-relaxed  text-center bg-gray-100 rounded-sm px-2  shadow-md  text-sm mr-0'
+           >
+           {copyButtonState}
+           </button>
+           </p>
+       </div>
+     )} 
+
+       
 
        
      </div>
