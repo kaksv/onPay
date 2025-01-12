@@ -1,70 +1,29 @@
-# Getting Started with Create React App
+# [OnPay](https://on-pay.vercel.app/)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<em><strong>Seamless Cross-Border Stablecoin Payments Across Africa.</strong></em>.
 
-## Available Scripts
+<p>[OnPay](https://on-pay.vercel.app/) is a cutting-edge web application designed to streamline and simplify the transfer of cross-border payments<br/>
+using stablecoins across the African continent. <br/>
+Built with the goal of bridging the gap in Africa's financial infrastructure, [onPay](https://on-pay.vercel.app/) leverages blockchain technology to <br/>
+provide a fast, secure, and cost-effective alternative to traditional cross-border payment methods.
 
-In the project directory, you can run:
 
-### `npm start`
+### Key Features:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- ***Stablecoin Transfers:*** <br/> [onPay](https://on-pay.vercel.app) supports the use of stablecoins: cryptocurrencies pegged to the value of fiat currencies <br/> like the US Dollar or Euro; ensuring minimal volatility and making it ideal for cross-border transactions.
+- ***Low Fees & Fast Transactions:*** <br/> By cutting out intermediaries, [onPay](https://on-pay.vercel.app/) enables affordable, <br/> near-instantaneous transfers, dramatically reducing the time and cost associated with traditional remittance services.
+- ***User-Friendly Interface:*** <br/> onPay’s intuitive and easy-to-use web interface allows anyone:regardless of their technical knowledge; to <br/> send and receive stablecoin payments with just a few clicks.
+- ***Security and Compliance:*** <br/> [onPay](https://on-pay.vercel.app) uses blockchain's inherent security features, <br/>ensuring that transactions are transparent, tamper-proof, and safe from fraud. <br/>Additionally, the platform adheres to international compliance standards, enabling it to cater to businesses and users alike.
+- ***Accessibility and Inclusion:*** [onPay](https://on-pay.vercel.app) empowers underserved populations by enabling<br/> easy access to digital payments and cross-border remittances without the need for traditional banking infrastructure. <br/>All you need is an internet connection and a compatible wallet to start transacting.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Use Cases:
 
-### `npm test`
+- ***Remittances:*** <br/> African migrant workers can easily send money home to their families, <br/>bypassing expensive fees and lengthy processing times from traditional money transfer services.
+- ***Business Payments:*** <br/> Businesses can streamline cross-border payments for goods, services, and partnerships <br/>across different African countries, enhancing trade and reducing transaction costs.
+- ***Freelancers & Contractors:*** [onPay](https://on-pay.vercel.app) enables freelancers and contractors working for international clients<br/> to receive payments in stablecoins, ensuring faster settlements and protecting against currency fluctuations.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Why onPay?
+- On top of the benefits of faster, cheaper, and more secure transactions, onPay is built specifically to solve the challenges faced by Africans in accessing reliable financial services. <br/>With the rise of stablecoins, [onPay](https://on-pay.vercel.app) provides a robust solution to leverage blockchain technology for the economic empowerment of<br/> individuals, businesses, and institutions across the continent.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
