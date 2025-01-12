@@ -2,9 +2,9 @@
 
 <em><strong>Seamless Cross-Border Stablecoin Payments Across Africa.</strong></em>.
 
-<p>[OnPay](https://on-pay.vercel.app/) is a cutting-edge web application designed to streamline and simplify the transfer of cross-border payments<br/>
+<p> [OnPay](https://on-pay.vercel.app/) is a cutting-edge web application designed to streamline and simplify the transfer of cross-border payments<br/>
 using stablecoins across the African continent. <br/>
-Built with the goal of bridging the gap in Africa's financial infrastructure, [onPay](https://on-pay.vercel.app/) leverages blockchain technology to <br/>
+Built with the goal of bridging the gap in Africa's financial infrastructure, onPay leverages blockchain technology to <br/>
 provide a fast, secure, and cost-effective alternative to traditional cross-border payment methods.
 
 
