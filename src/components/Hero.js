@@ -23,7 +23,7 @@ function Hero() {
     const [etheBalanceChange, setEtheBalanceChange] = useState(false);
     const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
-    // const rpcEndPoint = 'https://sepolia.infura.io/v3/beec3ffec28f485fb9bf679eb19e5b6d';
+    
     const sepoliaUsdcAddress = '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238';
  
     useEffect(() => {
@@ -45,6 +45,7 @@ function Hero() {
         setAccount(accounts[0]);
         updateBalance(accounts[0]);
         updateUsdBalance(accounts[0]);
+           alert('ensure that your wallet is connected to sepolia');
     } catch (error) {
         console.error('Error connecting to wallet:', error);
     }
